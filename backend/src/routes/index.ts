@@ -1,0 +1,13 @@
+import { Router } from 'express';
+import { reservationController } from '../controllers/reservationController.js';
+import { telegramController } from '../controllers/telegramController.js';
+import { RestaurantRepository } from '../repositories/restaurantRepository.js';
+import { TableRepository } from '../repositories/tableRepository.js';
+const router = Router(); const tables = new TableRepository(); const restaurant = new RestaurantRepository();
+router.get('/health', (_, res) => res.json({ ok:true }));
+router.get('/reservations', reservationController.list); router.post('/reservations', reservationController.create); router.patch('/reservations/:id', reservationController.update); router.post('/reservations/:id/cancel', reservationController.cancel); router.delete('/reservations/:id', reservationController.remove);
+router.get('/availability', reservationController.availability); router.get('/dashboard', reservationController.dashboard);
+router.get('/tables', async(_,res)=>res.json(await tables.getAll())); router.put('/tables/:id', async(req,res)=>res.json(await tables.upsert({ ...req.body, id:req.params.id })));
+router.get('/restaurant', async(_,res)=>res.json(await restaurant.getConfig())); router.put('/restaurant', async(req,res)=>res.json(await restaurant.upsert({ ...req.body, id:'main' })));
+router.post('/telegram/webhook', telegramController.webhook);
+export default router;
