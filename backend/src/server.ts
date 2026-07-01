@@ -1,0 +1,11 @@
+import express from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
+import { env } from './config/env.js';
+import router from './routes/index.js';
+import { logger } from './utils/logger.js';
+const app = express();
+app.use(helmet()); app.use(cors({ origin: env.FRONTEND_ORIGIN === '*' ? true : env.FRONTEND_ORIGIN })); app.use(express.json({ limit:'1mb' }));
+app.use('/api', router);
+app.use((err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => { logger.error({ err }, 'request_failed'); res.status(400).json({ error: err.message }); });
+app.listen(env.PORT, () => logger.info({ port: env.PORT }, 'api_started'));

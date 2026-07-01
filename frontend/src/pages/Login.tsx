@@ -1,0 +1,4 @@
+import { Box, Button, Paper, TextField, Typography } from '@mui/material';
+import { FormEvent, useState } from 'react';
+import { useAuth } from '../context/AuthContext';
+export function Login(){ const {login}=useAuth(); const [email,setEmail]=useState(''); const [password,setPassword]=useState(''); async function submit(e:FormEvent){ e.preventDefault(); await login(email,password); } return <Box minHeight="100vh" display="grid" sx={{placeItems:'center'}}><Paper sx={{p:4,width:380}} component="form" onSubmit={submit}><Typography variant="h4" gutterBottom>Panel de reservas</Typography><TextField fullWidth label="Email" margin="normal" value={email} onChange={e=>setEmail(e.target.value)}/><TextField fullWidth label="Contraseña" type="password" margin="normal" value={password} onChange={e=>setPassword(e.target.value)}/><Button fullWidth size="large" type="submit" variant="contained" sx={{mt:2}}>Ingresar</Button></Paper></Box>; }
